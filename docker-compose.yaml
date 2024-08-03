@@ -1,0 +1,106 @@
+version: '3'
+
+services:
+  etcd:
+    image: bitnami/etcd:3.5.9
+    container_name: etcd
+    ports:
+      - "3379:2379"
+      - "3380:2380"
+    environment:
+      - ETCD_ENABLED_V2=true
+      - ALLOW_NONE_AUTHENTICATION=yes
+      # 将 'etcd' 改为宿主机地址
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:3379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_NAME=etcd
+    volumes:
+      - ./components/etcd/data:/bitnami/etcd/data
+      - ./components/etcd/logs:/bitnami/etcd/logs
+    networks:
+      easy-chat:
+
+  redis:
+    image: redis:alpine3.20
+    ports:
+      - 16379:6379
+    container_name: redis
+    volumes:
+      - ./components/redis/data:/data
+      - ./components/redis/etc/redis.conf:/usr/local/redis/etc/redis.conf
+    environment:
+      TZ: Asia/Shanghai
+    restart: always
+    networks:
+      easy-chat:
+    command:
+      - redis-server --requirepass liteChat --appendonly yes
+
+  mysql:
+    image: mysql:5.7
+    ports:
+      - 13306:3306
+    container_name: mysql
+    volumes:
+      - ./components/mysql/data:/var/lib/mysql
+      - ./etc/localtime:/etc/localtime
+    environment:
+      MYSQL_ROOT_PASSWORD: 941cao**
+    restart: always
+    networks:
+      easy-chat:
+
+  mongo:
+    image: mongo:4.0
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 941cao**
+    ports:
+      - 47017:27017
+    volumes:
+      - ./components/mongodb/data:/data/db
+      - /etc/localtime:/etc/localtime
+    restart: always
+    networks:
+      easy-chat:
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - 2181:2181
+    container_name: zookeeper
+    volumes:
+      - /etc/localtime:/etc/localtime
+    environment:
+      TZ: Asia/Shanghai
+    restart: always
+    networks:
+      easy-chat:
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    restart: always
+    ports:
+      - 9092:9092
+    environment:
+      TZ: Asia/Shanghai
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "ws2ms_chat:8:1,ms2ps_chat:8:1,msg_to_mongo:8:1"
+      #LISTENERS的IP需要替换为宿主机的IP
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://127.0.0.1:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_LISTENERS: INSIDE://:9092
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms256M"
+    depends_on:
+      - zookeeper
+    networks:
+      easy-chat:
+
+networks:
+  easy-chat:
+    driver: bridge
+

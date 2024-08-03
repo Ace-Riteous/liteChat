@@ -1,0 +1,14 @@
+Name: user
+Host: 127.0.0.1
+Port: 8888
+
+UserRpc:
+  Etcd:
+    Hosts:
+      #改为etcd宿主机地址
+      - 127.0.0.1:2379
+    Key: user.rpc
+
+JwtAuth:
+  AccessSecret: riteous.com
+  AccessExpire: 604800

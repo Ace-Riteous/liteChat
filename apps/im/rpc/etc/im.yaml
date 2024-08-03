@@ -1,0 +1,11 @@
+Name: im.rpc
+ListenOn: 0.0.0.0:10002
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: im.rpc
+
+Mongo:
+  #Url: "mongodb://root:941cao**@127.0.0.1:27017"
+  Url: "mongodb://@127.0.0.1:27017"
+  DB: "liteChat"

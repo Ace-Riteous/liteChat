@@ -1,0 +1,23 @@
+Name: user.rpc
+ListenOn: 127.0.0.1:10000
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: user.rpc
+
+Mysql:
+  DataSource: root:941cao**@tcp(127.0.0.1:3306)/liteChat?charset=utf8mb4&parseTime=True&loc=Local
+
+Redisx:
+  Host: 127.0.0.1:6379
+  Type: node
+  Pass:
+
+Cache:
+  - Host: 127.0.0.1:6379
+    Type: node
+    Pass:
+
+Jwt:
+  AccessSecret: riteous.com
+  AccessExpire: 604800

@@ -1,0 +1,12 @@
+Name: im
+Host: 0.0.0.0
+Port: 8882
+
+JwtAuth:
+  AccessSecret: riteous.com
+
+ImRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: im.rpc

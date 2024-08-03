@@ -1,0 +1,17 @@
+Name: im.ws
+ListenOn: 0.0.0.0:10090
+
+JwtAuth:
+  AccessSecret: riteous.com
+  AccessExpire: 604800
+
+Mongo:
+  #Url: "mongodb://root:941cao**@127.0.0.1:27017"
+  Url: "mongodb://@127.0.0.1:27017"
+  DB: "liteChat"
+
+MsgChatTransfer:
+  Topic: MsgChatTransfer
+  Addrs:
+    #kafka连接地址
+    - 127.0.0.1:9092

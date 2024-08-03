@@ -1,0 +1,36 @@
+syntax = "v1"
+
+info(
+	title: "user api struct"
+	author: "riteous"
+)
+
+import (
+	"domain.api"
+)
+
+@server (
+	prefix :v1/user
+	group:user
+)
+
+service user{
+	@doc "user register"
+	@handler register
+	post /register(RegisterReq)returns(RegisterResp)
+	@doc "user login"
+	@handler login
+	get /login(LoginReq)returns(LoginResp)
+}
+
+@server(
+	prefix :v1/user
+	group :user
+	jwt :JwtAuth
+)
+
+service user{
+	@doc "get user info"
+	@handler detail
+	get /detail(UserInfoReq)returns(UserInfoResp)
+}

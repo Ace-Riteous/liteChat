@@ -1,0 +1,14 @@
+Name: social.rpc
+ListenOn: 0.0.0.0:10001
+Etcd:
+  Hosts:
+    - 127.0.0.1:2379
+  Key: social.rpc
+
+Mysql:
+  DataSource: root:941cao**@tcp(127.0.0.1:3306)/liteChat?charset=utf8mb4&parseTime=true
+
+Cache:
+  - Host: 127.0.0.1:6379
+    Type: node
+    Pass:

@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./user";
+
+// goctl rpc protoc ./user.proto --go_out=. --go-grpc_out=. --zrpc_out=.
+
+message UserEntity{
+  string id = 1;
+  string avatar = 2;
+  string nickname =3;
+  string phone = 4;
+  int32 status = 5;
+  int32 sex = 6;
+}
+
+message Request{
+  string ping=1;
+}
+message Respond{
+  string pong = 1;
+}
+
+message LoginReq{
+  string phone=1;
+  string password=2;
+}
+message LoginResp{
+  string token=1;
+  int64 expire =2 ;
+}
+
+message RegisterReq{
+  string phone=1;
+  string nickname=2;
+  string password=3;
+  string avatar=4;
+  int32 sex=5;
+}
+message RegisterResp{
+  string token=1;
+  int64 expire=2;
+}
+
+message GetUserInfoReq{
+  string id=1;
+}
+message GetUserInfoResp{
+  UserEntity user =1;
+}
+
+message FindUserReq{
+  string name=1;
+  string phone=2;
+  repeated string ids=3;
+}
+message FindUserResp{
+  repeated UserEntity user=1;
+}
+
+service User{
+  rpc Ping(Request) returns(Respond);
+  rpc Login(LoginReq) returns(LoginResp);
+  rpc Register(RegisterReq) returns(RegisterResp);
+  rpc GetUserInfo(GetUserInfoReq) returns(GetUserInfoResp);
+  rpc FindUser(FindUserReq) returns(FindUserResp);
+}
+
