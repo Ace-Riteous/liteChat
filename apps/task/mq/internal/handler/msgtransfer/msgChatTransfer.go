@@ -4,26 +4,20 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/zeromicro/go-zero/core/logx"
 	"liteChat/apps/im/immodels"
-	"liteChat/apps/im/ws/websocket"
-	"liteChat/apps/social/rpc/socialclient"
+	"liteChat/apps/im/ws/ws"
 	"liteChat/apps/task/mq/internal/svc"
 	"liteChat/apps/task/mq/mq"
-	"liteChat/pkg/constants"
-	"liteChat/pkg/xerr"
+	"liteChat/pkg/bitmap"
 )
 
 type MsgChatTransfer struct {
-	logx.Logger
-	svc *svc.ServiceContext
+	*BaseMsgTransfer
 }
 
 func NewMsgChatTransfer(svc *svc.ServiceContext) *MsgChatTransfer {
 	return &MsgChatTransfer{
-		Logger: logx.WithContext(context.Background()),
-		svc:    svc,
+		NewBaseMsgTransfer(svc),
 	}
 }
 
@@ -41,41 +35,16 @@ func (m *MsgChatTransfer) Consume(ctx context.Context, key, value string) error 
 		return err
 	}
 
-	switch data.ChatType {
-	case constants.SingleChatType:
-		return m.Single(&data)
-	case constants.GroupChatType:
-		return m.Group(ctx, &data)
-	default:
-		return errors.Wrap(xerr.NewInternalErr(), "no such chat_type")
-	}
-}
-
-func (m *MsgChatTransfer) Single(data *mq.MsgChatTransfer) error {
-	return m.svc.WsClient.Send(websocket.Message{
-		FrameType: websocket.FrameData,
-		Method:    "push",
-		FromId:    constants.SYSTEM_ROOT_UID,
-		Data:      data,
+	return m.Transfer(ctx, &ws.Push{
+		ConversationId: data.ConversationId,
+		ChatType:       data.ChatType,
+		SendId:         data.SendId,
+		RecvId:         data.RecvId,
+		RecvIds:        data.RecvIds,
+		SendTime:       data.SendTime,
+		MType:          data.MType,
+		Content:        data.Content,
 	})
-}
-
-func (m *MsgChatTransfer) Group(ctx context.Context, data *mq.MsgChatTransfer) error {
-	users, err := m.svc.GroupUsers(ctx, &socialclient.GroupUsersReq{
-		GroupId: data.RecvId,
-	})
-	if err != nil {
-		return err
-	}
-	data.RecvIds = make([]string, len(users.List))
-	for _, members := range users.List {
-		if members.UserId == data.SendId {
-			continue
-		}
-		data.RecvIds = append(data.RecvIds, members.UserId)
-	}
-
-	return m.Single(data)
 }
 
 func (m *MsgChatTransfer) AddChatLog(ctx context.Context, data *mq.MsgChatTransfer) error {
@@ -89,9 +58,15 @@ func (m *MsgChatTransfer) AddChatLog(ctx context.Context, data *mq.MsgChatTransf
 		MsgContent:     data.Content,
 		SendTime:       data.SendTime,
 	}
-	err := m.svc.ChatLogModel.Insert(ctx, &chatLog)
+
+	//将自己设置为已读
+	readRecords := bitmap.NewBitmap(0)
+	readRecords.Set(chatLog.SendId)
+	chatLog.ReadRecords = readRecords.Export()
+
+	err := m.svcCtx.ChatLogModel.Insert(ctx, &chatLog)
 	if err != nil {
 		return err
 	}
-	return m.svc.ConversationModel.UpdateMsg(ctx, &chatLog)
+	return m.svcCtx.ConversationModel.UpdateMsg(ctx, &chatLog)
 }

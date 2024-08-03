@@ -12,6 +12,7 @@ type Config struct {
 	ListenOn        string
 	SocialRpc       zrpc.RpcClientConf
 	MsgChatTransfer kq.KqConf
+	MsgReadTransfer kq.KqConf
 	Redisx          redis.RedisConf
 	Mongo           struct {
 		Url string

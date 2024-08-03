@@ -11,6 +11,17 @@ MsgChatTransfer:
   Offset: first
   Consumer: 1
 
+MsgReadTransfer:
+  Name: MsgReadTransfer
+  Brokers:
+    #kafka连接地址
+    - 127.0.0.1:9092
+  Group: kafka
+  Topic: msgReadTransfer
+  Offset: first
+  Consumer: 1
+
+
 Mongo:
   #Url: "mongodb://root:941cao**@127.0.0.1:27017"
   Url: "mongodb://@127.0.0.1:27017"
