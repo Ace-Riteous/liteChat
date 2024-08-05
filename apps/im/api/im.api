@@ -60,7 +60,15 @@ type (
 		RecvId   string `json:"recvId,omitempty"`
 		ChatType int32  `json:"ChatType,omitempty"`
 	}
-	setUpUserConversationResp struct{}
+	SetUpUserConversationResp struct{}
+
+	GetChatLogReadRecordsReq {
+		MsgId string `json:"msgId"`
+	}
+	GetChatLogReadRecordsResp {
+		Reads   []string `json:"reads"`
+		UnReads []string `json:"unReads"`
+	}
 )
 
 @server(
@@ -74,7 +82,7 @@ service im {
 
 	@doc "建立会话"
 	@handler setUpUserConversation
-	post /setup/conversation(SetUpUserConversationReq) returns(setUpUserConversationResp)
+	post /setup/conversation(SetUpUserConversationReq) returns(SetUpUserConversationResp)
 
 	@doc "获取会话"
 	@handler getConversations
@@ -83,4 +91,8 @@ service im {
 	@doc "更新会话"
 	@handler putConversations
 	put /conversation(PutConversationsReq) returns(PutConversationsResp)
+
+	@doc "获取已读未读记录"
+	@handler getChatLogReadRecords
+	get /chatlog/readRecords(GetChatLogReadRecordsReq) returns(GetChatLogReadRecordsResp)
 }

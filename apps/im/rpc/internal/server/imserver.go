@@ -50,3 +50,9 @@ func (s *ImServer) CreateGroupConversation(ctx context.Context, in *im.CreateGro
 	l := logic.NewCreateGroupConversationLogic(ctx, s.svcCtx)
 	return l.CreateGroupConversation(in)
 }
+
+// 获取会话记录
+func (s *ImServer) GetchatLog(ctx context.Context, in *im.GetChatLogReq) (*im.GetChatLogResp, error) {
+	l := logic.NewGetchatLogLogic(ctx, s.svcCtx)
+	return l.GetchatLog(in)
+}

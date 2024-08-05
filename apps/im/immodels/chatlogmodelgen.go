@@ -31,11 +31,11 @@ func newDefaultChatLogModel(conn *mon.Model) *defaultChatLogModel {
 }
 
 func (m *defaultChatLogModel) Insert(ctx context.Context, data *ChatLog) error {
-	if data.ID.IsZero() {
-		data.ID = primitive.NewObjectID()
-		data.CreateAt = time.Now()
-		data.UpdateAt = time.Now()
-	}
+	//if data.ID.IsZero() {
+	//	data.ID = primitive.NewObjectID()
+	//	data.CreateAt = time.Now()
+	//	data.UpdateAt = time.Now()
+	//}
 
 	_, err := m.conn.InsertOne(ctx, data)
 	return err

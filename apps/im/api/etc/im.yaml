@@ -10,3 +10,15 @@ ImRpc:
     Hosts:
       - 127.0.0.1:2379
     Key: im.rpc
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
+
+SocialRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: social.rpc

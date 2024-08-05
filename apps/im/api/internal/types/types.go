@@ -57,3 +57,12 @@ type SetUpUserConversationReq struct {
 
 type SetUpUserConversationResp struct {
 }
+
+type GetChatLogReadRecordsReq struct {
+	MsgId string `json:"msgId"`
+}
+
+type GetChatLogReadRecordsResp struct {
+	Reads   []string `json:"reads"`
+	UnReads []string `json:"unReads"`
+}

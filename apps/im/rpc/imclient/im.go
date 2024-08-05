@@ -36,6 +36,8 @@ type (
 		// 更新会话
 		PutConversations(ctx context.Context, in *PutConversationsReq, opts ...grpc.CallOption) (*PutConversationsResp, error)
 		CreateGroupConversation(ctx context.Context, in *CreateGroupConversationReq, opts ...grpc.CallOption) (*CreateGroupConversationResp, error)
+		// 获取会话记录
+		GetchatLog(ctx context.Context, in *GetChatLogReq, opts ...grpc.CallOption) (*GetChatLogResp, error)
 	}
 
 	defaultIm struct {
@@ -76,4 +78,10 @@ func (m *defaultIm) PutConversations(ctx context.Context, in *PutConversationsRe
 func (m *defaultIm) CreateGroupConversation(ctx context.Context, in *CreateGroupConversationReq, opts ...grpc.CallOption) (*CreateGroupConversationResp, error) {
 	client := im.NewImClient(m.cli.Conn())
 	return client.CreateGroupConversation(ctx, in, opts...)
+}
+
+// 获取会话记录
+func (m *defaultIm) GetchatLog(ctx context.Context, in *GetChatLogReq, opts ...grpc.CallOption) (*GetChatLogResp, error) {
+	client := im.NewImClient(m.cli.Conn())
+	return client.GetchatLog(ctx, in, opts...)
 }

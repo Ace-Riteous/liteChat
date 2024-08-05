@@ -4,6 +4,8 @@ import "liteChat/pkg/constants"
 
 type (
 	Msg struct {
+		MsgId           string            `mapstructure:"msg_id"`
+		ReadRecords     map[string]string `mapstructure:"read_records"`
 		constants.MType `mapstructure:"m_type"`
 		Content         string `mapstructure:"content"`
 	}
@@ -25,6 +27,7 @@ type (
 		RecvIds               []string          `mapstructure:"recv_ids"`
 		SendTime              int64             `mapstructure:"send_time"`
 		ReadRecords           map[string]string `mapstructure:"read_records"`
+		MsgId                 string            `mapstructure:"msg_id"`
 		constants.ContentType `mapstructure:"content_type"`
 		constants.MType       `mapstructure:"m_type"`
 		Content               string `mapstructure:"content"`

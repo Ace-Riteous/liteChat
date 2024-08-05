@@ -20,5 +20,6 @@ func NewListen(svc *svc.ServiceContext) *Listen {
 func (l *Listen) Services() []service.Service {
 	return []service.Service{
 		kq.MustNewQueue(l.svc.MsgChatTransfer, msgtransfer.NewMsgChatTransfer(l.svc)),
+		kq.MustNewQueue(l.svc.MsgReadTransfer, msgtransfer.NewMsgReadTransfer(l.svc)),
 	}
 }

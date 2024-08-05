@@ -15,3 +15,9 @@ MsgChatTransfer:
   Addrs:
     #kafka连接地址
     - 127.0.0.1:9092
+
+MsgReadTransfer:
+  Topic: MsgReadTransfer
+  Addrs:
+    #kafka连接地址
+    - 127.0.0.1:9092

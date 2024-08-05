@@ -32,6 +32,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/conversation",
 				Handler: putConversationsHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/chatlog/readRecords",
+				Handler: getChatLogReadRecordsHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 		rest.WithPrefix("/v1/im"),

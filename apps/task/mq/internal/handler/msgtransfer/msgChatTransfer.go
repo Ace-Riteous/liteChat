@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"liteChat/apps/im/immodels"
 	"liteChat/apps/im/ws/ws"
 	"liteChat/apps/task/mq/internal/svc"
@@ -25,13 +26,14 @@ func (m *MsgChatTransfer) Consume(ctx context.Context, key, value string) error 
 	fmt.Println("key : ", key, "value : ", value)
 
 	var (
-		data mq.MsgChatTransfer
+		data  mq.MsgChatTransfer
+		msgId = primitive.NewObjectID()
 	)
 	if err := json.Unmarshal([]byte(value), &data); err != nil {
 		return err
 	}
 
-	if err := m.AddChatLog(ctx, &data); err != nil {
+	if err := m.AddChatLog(ctx, msgId, &data); err != nil {
 		return err
 	}
 
@@ -42,13 +44,15 @@ func (m *MsgChatTransfer) Consume(ctx context.Context, key, value string) error 
 		RecvId:         data.RecvId,
 		RecvIds:        data.RecvIds,
 		SendTime:       data.SendTime,
+		MsgId:          msgId.Hex(),
 		MType:          data.MType,
 		Content:        data.Content,
 	})
 }
 
-func (m *MsgChatTransfer) AddChatLog(ctx context.Context, data *mq.MsgChatTransfer) error {
+func (m *MsgChatTransfer) AddChatLog(ctx context.Context, msgId primitive.ObjectID, data *mq.MsgChatTransfer) error {
 	chatLog := immodels.ChatLog{
+		ID:             msgId,
 		ConversationId: data.ConversationId,
 		SendId:         data.SendId,
 		RecvId:         data.RecvId,
