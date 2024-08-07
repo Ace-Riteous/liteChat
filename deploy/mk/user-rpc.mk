@@ -3,11 +3,11 @@ VERSION = latest
 SERVER_NAME= user
 SERVER_TYPE= rpc
 
-DOCKER_REPO_TEST = registry.cn-hangzhou.aliyuns.com/easy-chat/${SERVER_NAME}-${SERVER_TYPE}-dev
+DOCKER_REPO_TEST = registry.cn-hangzhou.aliyuns.com/liteChat/${SERVER_NAME}-${SERVER_TYPE}-dev
 
 VERSION_TEST = $(VERSION)
 
-APP_NAME_TEST = easy-chat-${SERVER_NAME}-${SERVER_TYPE}-dev
+APP_NAME_TEST = liteChat-${SERVER_NAME}-${SERVER_TYPE}-dev
 
 DOCKER_FILE_TEST = ./deploy/dockerfile/Dockerfile_${SERVER_NAME}_${SERVER_TYPE}_dev
 

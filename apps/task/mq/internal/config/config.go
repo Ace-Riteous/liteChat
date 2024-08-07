@@ -13,8 +13,14 @@ type Config struct {
 	SocialRpc       zrpc.RpcClientConf
 	MsgChatTransfer kq.KqConf
 	MsgReadTransfer kq.KqConf
-	Redisx          redis.RedisConf
-	Mongo           struct {
+	MsgReadHandler  struct {
+		GroupMsgReadHandler         int
+		GroupMsgReadRecordDelayTime int64
+		GroupMsgReadRecordMaxCount  int
+	}
+
+	Redisx redis.RedisConf
+	Mongo  struct {
 		Url string
 		DB  string
 	}

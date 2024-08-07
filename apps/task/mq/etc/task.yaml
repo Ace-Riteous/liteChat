@@ -21,6 +21,10 @@ MsgReadTransfer:
   Offset: first
   Consumer: 1
 
+MsgReadHandler:
+  GroupMsgReadHandler: 1
+  GroupMsgReadRecordDelayTime: 60
+  GroupMsgReadRecordMaxCount: 2
 
 Mongo:
   #Url: "mongodb://root:941cao**@127.0.0.1:27017"
