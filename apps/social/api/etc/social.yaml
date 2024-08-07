@@ -22,3 +22,7 @@ ImRpc:
 
 JwtAuth:
   AccessSecret: riteous.com
+
+Redisx:
+  Host: 127.0.0.1:6379
+  Pass:

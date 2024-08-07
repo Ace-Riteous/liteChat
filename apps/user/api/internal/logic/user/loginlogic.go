@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/jinzhu/copier"
 	"liteChat/apps/user/rpc/user"
+	"liteChat/pkg/constants"
 
 	"liteChat/apps/user/api/internal/svc"
 	"liteChat/apps/user/api/internal/types"
@@ -36,5 +37,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	}
 	var res types.LoginResp
 	_ = copier.Copy(&res, loginResp)
+
+	_ = l.svcCtx.Redis.HsetCtx(l.ctx, constants.REDIS_ONLINE_USER, loginResp.Id, "1")
 	return &res, nil
 }
