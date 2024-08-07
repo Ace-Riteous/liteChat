@@ -6,6 +6,6 @@ Etcd:
   Key: im.rpc
 
 Mongo:
-  #Url: "mongodb://root:941cao**@127.0.0.1:27017"
-  Url: "mongodb://@127.0.0.1:27017"
+  Url: "mongodb://root:941cao**@127.0.0.1:27017"
+  #Url: "mongodb://@127.0.0.1:27017"
   DB: "liteChat"

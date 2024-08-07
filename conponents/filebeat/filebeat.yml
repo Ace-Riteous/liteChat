@@ -1,0 +1,17 @@
+# 输入
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /root/easy-chat/components/apisix/logs/access.log
+    fields_under_root: true
+    fields:
+      type: apisix
+
+# 输出
+#output.console:
+#  pretty: true
+#  enable: true
+
+output.logstash:
+  hosts: ["192.168.117.24:5044"]

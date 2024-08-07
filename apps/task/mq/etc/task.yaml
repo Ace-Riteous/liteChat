@@ -27,8 +27,8 @@ MsgReadHandler:
   GroupMsgReadRecordMaxCount: 2
 
 Mongo:
-  #Url: "mongodb://root:941cao**@127.0.0.1:27017"
-  Url: "mongodb://@127.0.0.1:27017"
+  Url: "mongodb://root:941cao**@127.0.0.1:27017"
+  #Url: "mongodb://@127.0.0.1:27017"
   DB: "liteChat"
 
 Redisx:

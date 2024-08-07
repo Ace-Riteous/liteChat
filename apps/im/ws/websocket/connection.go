@@ -103,13 +103,13 @@ func (c *Conn) keepalive() {
 		select {
 		case <-idleTimer.C:
 			c.IdleMu.Lock()
-
-			if c.Idle.IsZero() {
+			idle := c.Idle
+			if idle.IsZero() {
 				c.IdleMu.Unlock()
 				idleTimer.Reset(c.MaxConnectionIdle)
 				continue
 			}
-			val := c.MaxConnectionIdle - time.Since(c.Idle)
+			val := c.MaxConnectionIdle - time.Since(idle)
 			c.IdleMu.Unlock()
 			if val <= 0 {
 				c.S.Close(c)

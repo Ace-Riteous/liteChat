@@ -18,7 +18,7 @@ services:
       - ./components/etcd/data:/bitnami/etcd/data
       - ./components/etcd/logs:/bitnami/etcd/logs
     networks:
-      easy-chat:
+      liteChat:
 
   redis:
     image: redis:alpine3.20
@@ -32,7 +32,7 @@ services:
       TZ: Asia/Shanghai
     restart: always
     networks:
-      easy-chat:
+      liteChat:
     command:
       - redis-server --requirepass liteChat --appendonly yes
 
@@ -48,7 +48,7 @@ services:
       MYSQL_ROOT_PASSWORD: 941cao**
     restart: always
     networks:
-      easy-chat:
+      liteChat:
 
   mongo:
     image: mongo:4.0
@@ -63,7 +63,7 @@ services:
       - /etc/localtime:/etc/localtime
     restart: always
     networks:
-      easy-chat:
+      liteChat:
 
   zookeeper:
     image: wurstmeister/zookeeper
@@ -76,7 +76,7 @@ services:
       TZ: Asia/Shanghai
     restart: always
     networks:
-      easy-chat:
+      liteChat:
 
   kafka:
     image: wurstmeister/kafka
@@ -98,9 +98,107 @@ services:
     depends_on:
       - zookeeper
     networks:
-      easy-chat:
+      liteChat:
+        
+  apisix-dashboard:
+    image: apache/apisix-dashboard:3.0.1-alpine
+    container_name: apisix-dashboard
+    restart: always
+    depends_on:
+      - etcd
+    volumes:
+      - ./components/apisix-dashboard/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+    ports:
+      - "9000:9000"
+    networks:
+      liteChat:
+
+  apisix:
+    image: apache/apisix:${APISIX_IMAGE_TAG:-3.2.0-debian}
+    container_name: apisix
+    restart: always
+    depends_on:
+      - etcd
+      - apisix-dashboard
+    volumes:
+      - ./components/apisix/config.yaml:/usr/local/apisix/conf/config.yaml
+      - ./components/apisix/logs:/usr/local/apisix/logs
+    ports:
+      - "9180:9180/tcp"
+      - "9080:9080/tcp"
+      - "9091:9091/tcp"
+      - "9443:9443/tcp"
+      - "9093:9092/tcp"
+    networks:
+      liteChat:
+
+  jeager:
+    image: jaegertracing/all-in-one:latest
+    container_name: jeager
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    restart: always
+    networks:
+      liteChat:
+
+  sail:
+    image: ccr.ccs.tencentyun.com/hyy-yu/sail:latest
+    container_name: sail
+    ports:
+      - "8108:8108"
+    volumes:
+      - "./components/sail/compose-cfg.toml:/app/cfg.toml"
+    restart: always
+    platform: linux/arm64
+    networks:
+      liteChat:
+
+  elasticsearch:
+    image: elasticsearch:7.17.4
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./components/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - 'cluster.name=elasticsearch'
+      - 'discovery.type=single-node'
+      - 'ES_JAVA_OPTS=-Xms1024m -Xmx1024m'
+    networks:
+      liteChat:
+
+  logstash:
+    image: logstash:7.17.4
+    container_name: logstash
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./components/logstash/logs:/usr/share/logstash/logs
+      - ./components/mysql/data/ad16009c6861-slow.log:/var/logs/mysql-slow.log
+      - ./components/apisix/logs:/var/logs/apisix
+      - ./components/logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - '5044:5044'
+      - '50000:50000/tcp'
+      - '50000:50000/udp'
+      - '9600:9600'
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      liteChat:
 
 networks:
-  easy-chat:
+  liteChat:
     driver: bridge
 
