@@ -54,10 +54,14 @@ func NewServer(addr string, opts ...ServerOptions) *Server {
 		patten:         opt.patten,
 		routes:         make(map[string]HandlerFunc),
 		addr:           addr,
-		upgrader:       websocket.Upgrader{},
-		connToUser:     make(map[*Conn]string),
-		userToConn:     make(map[string]*Conn),
-		Logger:         logx.WithContext(context.Background()),
+		upgrader: websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
+		},
+		connToUser: make(map[*Conn]string),
+		userToConn: make(map[string]*Conn),
+		Logger:     logx.WithContext(context.Background()),
 	}
 }
 

@@ -25,6 +25,9 @@ func NewJwtAuth(svc *svc.ServiceContext) *JwtAuth {
 }
 
 func (j *JwtAuth) Auth(w http.ResponseWriter, r *http.Request) bool {
+	if tok := r.Header.Get("sec-websocket-protocol"); tok != "" {
+		r.Header.Set("Authorization", tok)
+	}
 	tok, err := j.parser.ParseToken(r, j.svc.Config.JwtAuth.AccessSecret, "")
 	if err != nil {
 		j.Errorf("parse token err %v", err)
