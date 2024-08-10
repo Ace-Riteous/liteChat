@@ -3,18 +3,21 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/proc"
+	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"liteChat/pkg/configserver"
-	"liteChat/pkg/resultx"
-
-	"liteChat/apps/user/api/internal/config"
 	"liteChat/apps/user/api/internal/handler"
 	"liteChat/apps/user/api/internal/svc"
+	"liteChat/pkg/configserver"
+	"liteChat/pkg/resultx"
+	"sync"
 
-	"github.com/zeromicro/go-zero/rest"
+	"liteChat/apps/user/api/internal/config"
 )
 
 var configFile = flag.String("f", "etc/user.yaml", "the etc file")
+
+var wg sync.WaitGroup
 
 func main() {
 	flag.Parse()
@@ -28,11 +31,35 @@ func main() {
 		Configs:        "user-api.yaml",
 		ConfigFilePath: "./conf",
 		LogLevel:       "DEBUG",
-	})).MustLoad(&c, nil)
+	})).MustLoad(&c, func(bytes []byte) error {
+		var c config.Config
+		err := configserver.LoadFromJsonBytes(bytes, &c)
+
+		proc.WrapUp()
+
+		wg.Add(1)
+		go func(c config.Config) {
+			defer wg.Done()
+			Run(c)
+		}(c)
+
+		wg.Wait()
+		return err
+	})
 	if err != nil {
 		panic(err)
 	}
 
+	wg.Add(1)
+	go func(c config.Config) {
+		defer wg.Done()
+		Run(c)
+	}(c)
+
+	wg.Wait()
+}
+
+func Run(c config.Config) {
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 

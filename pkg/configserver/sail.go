@@ -26,7 +26,7 @@ type Sail struct {
 	c *Config
 }
 
-func NewSail(cfg *Config) *Sail {
+func NewSail(c *Config) *Sail {
 	//s := sail.New(&sail.MetaConfig{
 	//	ETCDEndpoints:  cfg.ETCDEndpoints,
 	//	ProjectKey:     cfg.ProjectKey,
@@ -35,7 +35,7 @@ func NewSail(cfg *Config) *Sail {
 	//	ConfigFilePath: cfg.ConfigFilePath,
 	//	LogLevel:       cfg.LogLevel,
 	//})
-	return &Sail{c: cfg}
+	return &Sail{c: c}
 }
 
 func (s *Sail) Build() error {
@@ -63,6 +63,7 @@ func (s *Sail) FromJsonBytes() ([]byte, error) {
 
 	return s.fromJsonBytes(s.Sail)
 }
+
 func (s *Sail) fromJsonBytes(sail *sail.Sail) ([]byte, error) {
 	v, err := sail.MergeVipers()
 	if err != nil {
