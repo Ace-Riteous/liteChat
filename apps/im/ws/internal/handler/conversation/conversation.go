@@ -36,9 +36,10 @@ func Chat(svc *svc.ServiceContext) websocket.HandlerFunc {
 			ChatType:       data.ChatType,
 			SendId:         conn.Uid,
 			RecvId:         data.RecvId,
-			SendTime:       time.Now().UnixNano(),
+			SendTime:       time.Now().UnixMilli(),
 			MType:          data.Msg.MType,
 			Content:        data.Msg.Content,
+			MsgId:          msg.Id,
 		})
 		if err != nil {
 			_ = srv.Send(websocket.NewErrMessage(err), conn)

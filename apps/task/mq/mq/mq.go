@@ -3,6 +3,7 @@ package mq
 import "liteChat/pkg/constants"
 
 type MsgChatTransfer struct {
+	MsgId              string `json:"msg_id"`
 	ConversationId     string `json:"conversation_id"`
 	constants.ChatType `json:"chat_type"`
 	SendId             string   `json:"send_id"`

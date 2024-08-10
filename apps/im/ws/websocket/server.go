@@ -112,8 +112,9 @@ func (s *Server) HandlerConn(conn *Conn) {
 		err = json.Unmarshal(msg, &message)
 		if err != nil {
 			s.Errorf("json unmarshal err %v", err)
-			s.Close(conn)
-			return
+			//s.Close(conn)
+			//return
+			continue
 		}
 
 		if s.IsAck(&message) {
