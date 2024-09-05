@@ -1,3 +1,8 @@
+/**
+ * @author: dn-jinmin/dn-jinmin
+ * @doc:
+ */
+
 package rpcserver
 
 import (
@@ -10,15 +15,19 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func LogInterceptor(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
+func LogInterceptor(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any,
+	err error) {
 	resp, err = handler(ctx, req)
 	if err == nil {
 		return resp, nil
 	}
-	logx.WithContext(ctx).Errorf("【RPC SERVER ERR】 ", err)
+
+	logx.WithContext(ctx).Errorf("【RPC SRV ERR】 %v", err)
+
 	causeErr := errors.Cause(err)
 	if e, ok := causeErr.(*zerr.CodeMsg); ok {
 		err = status.Error(codes.Code(e.Code), e.Msg)
 	}
+
 	return resp, err
 }
